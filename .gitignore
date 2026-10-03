@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+templates/*completat*.xlsx
+templates/BE2026_completat_TEST.xlsx
+templates/*lengkap*.xlsx
+config/.templat_terakhir.txt
+config/settings.json
+config/auth.json

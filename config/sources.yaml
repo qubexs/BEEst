@@ -1,0 +1,42 @@
+# Sumber dalam talian untuk pengisi BE2026.
+# Edit URL / model tanpa sentuh kod.
+
+sources:
+  anaf_tva:
+    enabled: true
+    url: "https://webservicesp.anaf.ro/api/PlatitorTvaRest/v9/tva"
+    fallback_url: "https://webservicesp.anaf.ro/PlatitorTvaRest/api/v8/ws/tva"
+    desc: "ANAF rasmi: nama, alamat, CUI, status syarikat"
+  bnr_rates:
+    enabled: true
+    url: "https://www.bnr.ro/nbrfxrates.xml"
+    desc: "Kadar harian rasmi BNR (EUR, USD, GBP)"
+  mfinante:
+    enabled: true
+    url: "https://mfinante.gov.ro/domenii/informatii-fiscale"
+    desc: "Portal penyata (CAPTCHA manual - app tanda sebagai manual)"
+  insse_ipc:
+    enabled: true
+    url: "https://insse.ro/cms/ro/content/indicele-preturilor-de-consum"
+    desc: "INSSE IPC / inflasi (cuba baca, jika tidak jadi anggaran)"
+
+# AI OpenRouter: cari data tambahan tentang syarikat & cadang nilai borang.
+# Kunci API: isi dalam aplikasi ATAU set pemboleh ubah persekitaran OPENROUTER_API_KEY.
+# Model lalai murah; model ":free" adalah percuma (had kadar).
+openrouter:
+  enabled: true
+  api_url: "https://openrouter.ai/api/v1/chat/completions"
+  default_model: "openai/gpt-4o-mini"
+  models:
+    - "openai/gpt-4o-mini"
+    - "meta-llama/llama-3.3-70b-instruct:free"
+    - "google/gemini-2.0-flash-001"
+    - "anthropic/claude-3.5-haiku"
+
+# Anggaran heuristik — diguna HANYA bila nilai dalam talian tiada.
+# Sentiasa dilabel ANGGARAN/AI supaya anda boleh tolak dalam pratonton.
+estimates:
+  curs_eur_mediu_2026: 5.05
+  curs_usd_mediu_2026: 4.65
+  inflatie_2026: 5.1
+  pib_crestere_2026: 1.4

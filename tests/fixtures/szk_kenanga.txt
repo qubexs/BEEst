@@ -1,0 +1,42 @@
+Company 	SZK KENANGA VENTURES							SSM :	0
+Newss	3956939		Aktiviti perkhidmatan teknologi maklumat lain t.t.t.l.(3)
+Responden Name		Mr Seng			Capital	 50,000
+Designation		Exe			Reserve	 -
+Start Year		2018
+Financial Year		1/1/2022
+End Financial		31/12/2022
+Date Created		5/5/2023
+Komputer		 8,092 	 	  	  	  	  	 1,206 	 6,886
+Jentera		 151,714 	 	  	  	  	  	 21,532 	 130,182
+Perabut		 2,568 	 	  	  	  	  	 1,284 	 1,284
+Jumlah		 162,374 	 	  	  	  	  	 24,022 	 138,352 	 45,800
+8.1	Jualan produk buat/proses/pasang			 880,610
+9.1	Kos bahan mentah / komponen			 292,209
+9.6	Air yang dibeli			 897
+9.7	Tenaga elektrik			 14,769
+9.8	Bahan pembakar, pelincir dan gas			 12,014
+9.28(b)	Sewaan operasi			 81,900
+9.29	Susut nilai			 39,204
+9.32(b)(ii) Cukai jalan				 3,524
+9.36(a)	Gaji & upah dibayar			 246,972
+9.36(d)(i)  Kumpulan Wang Simpanan Pekerja (KWSP)				 18,523
+9.36(d)(iii) Pertubuhan Keselamatan Sosial (PERKESO)				 2,679
+9.36(i)	Bayaran levi pekerja			 5,550
+9.39	Jumlah perbelanjaan			 731,249
+8.13	Jumlah pendapatan			 880,610
+8.15	JUMLAH BESAR 			 880,610
+9.44	JUMLAH BESAR			 731,249
+Bahan Mentah/Bakar	6503	8905
+Barang Dalam Proses	1755	1252
+Stok Runcit	12093	5879
+Jumlah	20351	16036
+Semasa	 149,361
+Sebelum	 246,446
+Hari	 265
+Jam/Shift	 8
+1				  	 	200 	 200 	 200 	    			Iron 	 Tan 	500	 292,209 		75
+Selangor	 61 	 49
+W.P.Kuala Lumpur	 39 	 51
+LELAKI	Warga	BWN	Gaji		PEREMPUAN	Warga	BWN	Gaji
+16	Pemilik	#VALUE!	#VALUE!
+20	Keluarga	#VALUE!	#VALUE!

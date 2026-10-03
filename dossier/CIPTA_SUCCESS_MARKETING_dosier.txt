@@ -1,0 +1,41 @@
+=== DOSIER SYARIKAT: CIPTA SUCCESS MARKETING ===
+Tarikh semakan: 2026-10-02
+
+STATUS: TIADA REKOD TEPAT
+Sebab: tiada rekod nama tepat dalam sumber awam percuma (SSM e-Info berbayar tidak dicapai); hanya syarikat nama seakan ditemui
+No. SSM ditemui: (tiada)
+
+--- Bukti internet (6) ---
+[1] TERATAK CIPTA SDN. BHD. (380157U) | Company Profile | CreditScan Malaysia
+    https://www.creditscan.com.my/Malaysia-Company/TERATAK-CIPTA-SDN-BHD/380157-U
+    » Malaysian Company incorporated on 18 Mar 1996, SSM registered, old reg 380157U / new 199601007811. Nama seakan 'CIPTA', BUKAN sasaran.
+[2] CIPTA TEKNOLOGI SDN. BHD. (199785U) | CreditScan
+    https://www.creditscan.com.my/Malaysia-Company/CIPTA-TEKNOLOGI-SDN-BHD/199785-U
+    » Incorporated 21 Jun 1990, reg 199785U / 199001008215. Nama seakan, BUKAN sasaran.
+[3] CIPTA HOLDINGS SDN. BHD. (492274X) | CreditScan
+    https://www.creditscan.com.my/Malaysia-Company/CIPTA-HOLDINGS-SDN-BHD/492274-X
+    » Incorporated 23 Aug 1999, reg 492274X / 199901017374. Nama seakan, BUKAN sasaran.
+[4] CIPTA X SDN. BHD. (1408403W) | CTOS
+    https://businessreport.ctoscredit.com.my/oneoffreport_api/single-report/malaysia-company/1408403W/CIPTA-X-SDN-BHD-
+    » Incorporated 2021-03-08, reg 1408403W / 202101008104. Nama seakan, BUKAN sasaran.
+[5] SAYEN GLOBAL SDN. BHD. — MULTI LEVEL MARKETING | CTOS
+    https://businessreport.ctoscredit.com.my/oneoffreport_api/single-report/malaysia-company/0678457H/SAYEN-GLOBAL-SDN-BHD-
+    » Nature of Business: MULTI LEVEL MARKETING ON CONSUMER AND PERSONAL PRODUCTS. Contoh profil syarikat pemasaran berdaftar (rujukan sektor, BUKAN sasaran).
+[6] SSM — saluran rasmi semakan (berbayar)
+    https://www.ssm-einfo.my
+    » Pengesahan rasmi status EXISTING/DISSOLVED hanya via SSM e-Info / MYDATA-SSM / ssmsearch.com / safedata-ssm.com. Carian nama penuh + no. pendaftaran disyorkan.
+
+--- Rekod direktori SSM-terbitan (0) ---
+(tiada — pengesahan rasmi perlu SSM e-Info berbayar: ssm-einfo.my / mydata-ssm.com.my / ssmsearch.com)
+
+--- ANGGARAN berasas (BUKAN fakta — sahkan sebelum guna) ---
+- sektor: Pemasaran / pengiklanan (agensi atau MLM barangan pengguna)
+  asas: kata kunci 'marketing' pada nama
+- bentuk: Enterprise (ROB) milik tunggal/perkongsian — andaian lazim PKS mikro tanpa 'SDN. BHD.' pada nama
+  asas: tiada 'SDN. BHD.' pada nama diberi
+- pekerja: 1–10 orang (PKS mikro)
+  asas: profil lazim perusahaan pemasaran kecil
+- hasil_tahunan: RM200 ribu – RM2 juta (PKS mikro/kecil)
+  asas: julat lazim sektor perkhidmatan kecil
+
+Langkah seterusnya: 1) semak ejaan/nama penuh SSM, 2) beli profil SSM e-Info (sahkan status EXISTING/DISSOLVED), 3) guna data sah ini untuk isi borang.
