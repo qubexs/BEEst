@@ -106,7 +106,7 @@ Write-Host '[setup] pip install -r requirements.txt ...'
 & cmd /c "$py -m pip install --disable-pip-version-check -r requirements.txt"
 if ($LASTEXITCODE -ne 0) { throw 'pip install gagal.' }
 
-Write-Host '[setup] SIAP. Login: admin / 7717'
+Write-Host '[setup] SIAP.'
 if (-not $NoLaunch) {
   Write-Host '[setup] Buka aplikasi...'
   if ($py -eq 'py -3') { $exe = 'py'; $appArgs = @('-3', 'kp205_viewer.py') }

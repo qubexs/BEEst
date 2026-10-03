@@ -53,6 +53,6 @@ if not %errorlevel%==0 (
 )
 
 :: ---------- 4. launch (login: admin / 7717) ----------
-echo [BEEst] Sedia. Buka aplikasi... ^(login: admin / 7717^)
+echo [BEEst] Sedia. Buka aplikasi...
 %PY% kp205_viewer.py
 pause
