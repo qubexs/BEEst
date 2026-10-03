@@ -18,6 +18,15 @@ Both apps gate behind a login dialog on startup.
 
 ## Quick start
 
+One line (fresh Windows PC + PowerShell — installs Python if missing,
+clones, configures PATH, installs deps, launches):
+
+```powershell
+powershell -ExecutionPolicy Bypass -c "iwr -useb https://raw.githubusercontent.com/qubexs/BEEst/master/setup.ps1 | iex"
+```
+
+Or manually:
+
 ```bat
 pip install -r requirements.txt
 python kp205_viewer.py            :: KP205 app (main)
