@@ -158,21 +158,27 @@ def _selaras_gaji(by_id: dict, stats: dict) -> None:
                            source="—", confidence="RENDAH",
                            note="Dikosongkan: gaji RM0 bukan kadar sah")
                 stats["gaji"] += 1
-    # KWSP 13% / PERKESO 1.75% exact when gaji known and current is weak.
+    # KWSP 13% / PERKESO 1.75% are REFERENCE rates (+- tolerance).
+    # Weak values inside the band are left alone; only outliers snap
+    # to the reference (same bands as semakan checks 7/8).
     gval = _num((by_id.get(f"{PB}::9.36(a)") or {}).get("value"))
     if gval:
-        for code, rate, lab in (("9.36(d)(i)", 0.13, "KWSP"),
-                                ("9.36(d)(iii)", 0.0175, "PERKESO")):
+        for code, rate, lo, hi, lab in (
+                ("9.36(d)(i)", 0.13, 0.11, 0.15, "KWSP"),
+                ("9.36(d)(iii)", 0.0175, 0.010, 0.025, "PERKESO")):
             f = by_id.get(f"{PB}::{code}")
             if f is None or f.get("missing") or _kuat(f):
                 continue
             cur = _num(f.get("value"))
+            ratio = (cur / gval) if cur is not None else None
+            if ratio is not None and lo <= ratio <= hi:
+                continue  # within +- tolerance — real-world variance, keep
             want = round(gval * rate)
             if cur != want:
                 f.update(value=want, raw=str(want), missing=False,
-                         source=f"ANGGARAN ({rate * 100:g}% gaji)",
+                         source=f"ANGGARAN ({rate * 100:g}% gaji ±)",
                          confidence="RENDAH",
-                         note=f"Selaras {lab} {rate * 100:g}% x gaji "
+                         note=f"Selaras {lab} rujukan {rate * 100:g}% x gaji "
                               f"RM{gval:g} (sebelum RM{(cur or 0):g})"[:220])
                 stats["kwsp"] += 1
     # Levi 9.36(i) follows BWN: no foreigners -> levy 0 (never a guess).
