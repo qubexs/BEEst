@@ -108,7 +108,8 @@ def main() -> int:
     ap.add_argument("--provider", choices=("auto", "openrouter", "gemini",
                                             "local", "hf", "huggingface"),
                     default="auto")
-    ap.add_argument("--sektor", choices=("auto", "perkhidmatan", "pembuatan"),
+    ap.add_argument("--sektor", choices=("auto", "perkhidmatan", "pembuatan",
+                                            "pembinaan"),
                     default="auto")
     ap.add_argument("--seimbang", type=float, default=0.0,
                     help="Sasar IO dan seimbangkan automatik (cth 0.65; 0=mati)")
@@ -135,8 +136,8 @@ def main() -> int:
     if a.year:
         tahun = a.year
     else:
-        raw = input("Enter Year [2022] : ").strip()
-        tahun = int(raw) if raw.isdigit() else 2022
+        raw = input("Enter Year [2025] : ").strip()
+        tahun = int(raw) if raw.isdigit() else 2025
 
     # ---- step 0: manual anchors (optional known figures) ----
     flag_anchors = {}

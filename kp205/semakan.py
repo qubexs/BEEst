@@ -19,6 +19,9 @@ BANDS = {
     "pembuatan": {
         "bahan": (0.25, 0.75), "gaji_share": (0.08, 0.35),
     },
+    "pembinaan": {
+        "bahan": (0.20, 0.60), "gaji_share": (0.10, 0.40),
+    },
     "perkhidmatan": {
         "bahan": (0.03, 0.45), "gaji_share": (0.15, 0.55),
     },

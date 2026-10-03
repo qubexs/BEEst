@@ -57,7 +57,7 @@ class Viewer(tk.Tk):
 
         self.f_path = tk.StringVar(value=initial or str(DEFAULT_REPORT))
         self.f_comp = tk.StringVar(value="")
-        self.f_year = tk.StringVar(value="2022")
+        self.f_year = tk.StringVar(value="2025")
         self.f_sec = tk.StringVar(value="Semua")
         self.f_q = tk.StringVar(value="")
         self.f_empty = tk.BooleanVar(value=False)
@@ -112,7 +112,8 @@ class Viewer(tk.Tk):
         self.f_sektor = tk.StringVar(value="Auto")
         ttk.Combobox(row1, textvariable=self.f_sektor, width=12,
                      state="readonly",
-                     values=["Auto", "Perkhidmatan", "Pembuatan"]).pack(side="left", padx=4)
+                      values=["Auto", "Perkhidmatan", "Pembuatan",
+                              "Pembinaan"]).pack(side="left", padx=4)
         self.btn_gen = ttk.Button(row1, text="Jana Laporan", command=self.generate)
         self.btn_gen.pack(side="left", padx=8)
         self.btn_stop = ttk.Button(row1, text="■ Berhenti", command=self.do_stop,
@@ -1530,7 +1531,7 @@ class Viewer(tk.Tk):
         try:
             tahun = int(self.f_year.get())
         except (ValueError, AttributeError):
-            tahun = 2022
+            tahun = 2025
         nama = self.data.get("syarikat", "")
         writer = self._to_writer_fields()
         ticked = {w["id"] for w, f in zip(writer, self.data["fields"])
@@ -1711,7 +1712,7 @@ class Viewer(tk.Tk):
         try:
             tahun = int(self.f_year.get())
         except ValueError:
-            tahun = 2022
+            tahun = 2025
         anchors = self._anchor_values()
         out = self.f_path.get() or str(DEFAULT_REPORT)
         # snapshot unticked boxes + edited values (UI thread).
@@ -1809,7 +1810,8 @@ class Viewer(tk.Tk):
             all_ids = {f["id"] for f in fields}
             ticked = all_ids - unticked
             sek = {"Auto": "", "Perkhidmatan": "perkhidmatan",
-                   "Pembuatan": "pembuatan"}.get(self.f_sektor.get(), "")
+                   "Pembuatan": "pembuatan",
+                   "Pembinaan": "pembinaan"}.get(self.f_sektor.get(), "")
             n_p, prof = pecah_auto(fields, nama,
                                    str(dossier.get("anggaran", "")),
                                    only=ticked, sektor=sek)

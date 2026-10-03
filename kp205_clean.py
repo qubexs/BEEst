@@ -113,8 +113,9 @@ def main() -> int:
     ap.add_argument("--susut", default="")
     ap.add_argument("--hasil", default="")
     ap.add_argument("--belanja", default="")
-    ap.add_argument("--year", type=int, default=2022)
-    ap.add_argument("--sektor", choices=("auto", "perkhidmatan", "pembuatan"),
+    ap.add_argument("--year", type=int, default=2025)
+    ap.add_argument("--sektor", choices=("auto", "perkhidmatan", "pembuatan",
+                                         "pembinaan"),
                     default="auto")
     ap.add_argument("--seimbang", type=float, default=0.0)
     ap.add_argument("--provider", choices=("auto", "openrouter", "gemini"),

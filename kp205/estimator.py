@@ -23,6 +23,12 @@ def _it_hint(nama: str, aktiviti: str) -> str:
         return ("Sektor: Perkhidmatan teknologi maklumat (MSIC 6201/6202/6311 lazim). "
                 "Anggaran ikut nisbah DOSM perkhidmatan IT PKS: margin 10-20%, "
                 "gaji 25-35% hasil, sewa 5-12% hasil.")
+    if any(k in t for k in ("pembinaan", "bina", "construction", "kontraktor",
+                            "pemaju", "konkrit", "cidb", "infrastruktur")):
+        return ("Sektor: Pembinaan (MSIC 4100/4210/4220/4290/4311/4321 lazim). "
+                "Anggaran ikut nisbah DOSM pembinaan PKS: bahan binaan 20-60% "
+                "hasil, subkontrak 9.10 dan sewa jentera 9.28(b) ketara, "
+                "gaji 10-40% hasil, susut jentera berat 9.29 tinggi.")
     return ""
 
 

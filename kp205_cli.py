@@ -51,12 +51,13 @@ def main() -> int:
     ap.add_argument("--in", dest="inp", required=True, help="Fail txt dump KP205")
     ap.add_argument("--out", dest="out", required=True, help="Laporan TXT output")
     ap.add_argument("--company", default="", help="Nama syarikat (override meta fail)")
-    ap.add_argument("--year", type=int, default=2022)
+    ap.add_argument("--year", type=int, default=2025)
     ap.add_argument("--provider", choices=("auto", "openrouter", "gemini"),
                     default="auto")
     ap.add_argument("--model", default="")
     ap.add_argument("--batch", type=int, default=60)
-    ap.add_argument("--sektor", choices=("auto", "perkhidmatan", "pembuatan"),
+    ap.add_argument("--sektor", choices=("auto", "perkhidmatan", "pembuatan",
+                                            "pembinaan"),
                     default="auto")
     ap.add_argument("--no-web", action="store_true", help="Langkau carian web")
     ap.add_argument("--offline", action="store_true",

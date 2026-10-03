@@ -56,26 +56,56 @@ BELANJA_PEMBUATAN = {
     "9.36(i)": 0.3, "9.36(j)": 0.1, "9.36(k)": 0.3, "9.37": 1.5, "9.38": 0.8,
     "9.41": 0.3, "9.43": 1,
 }
+PENDAPATAN_PEMBINAAN = {
+    "8.1": 88, "8.2.1": 3, "8.2.3": 1, "8.3": 2, "8.4": 1, "8.5": 1,
+    "8.6": 0.5, "8.7": 0.2, "8.8(e)": 0.5, "8.8(g)": 0.2, "8.9": 0.1,
+    "8.10(c)": 0.2, "8.10(e)": 0.3, "8.10(h)": 0.2, "8.10(j)": 0.3,
+    "8.12": 2.2,
+}
+BELANJA_PEMBINAAN = {
+    "9.1": 32, "9.2": 2, "9.3": 2.5, "9.4": 1.5, "9.5": 0.5, "9.6": 0.5,
+    "9.7": 2.5, "9.8": 2, "9.10": 4, "9.11": 2, "9.12": 0.5, "9.13": 3,
+    "9.14": 1, "9.15": 1, "9.16": 0.3, "9.17": 1, "9.18": 0.5,
+    "9.19": 0.2, "9.20": 0.3, "9.21": 1.5, "9.22": 0.3, "9.23": 0.5,
+    "9.24": 1, "9.25": 0.5, "9.26": 0.5, "9.27": 1, "9.28(b)": 4,
+    "9.29": 6, "9.30": 1.5, "9.31(a)": 0.1, "9.32(b)(i)": 0.3,
+    "9.32(b)(ii)": 0.3, "9.32(b)(iii)": 0.2, "9.32(c)": 1,
+    "9.33(a)": 0.2, "9.33(c)": 0.2, "9.33(d)": 0.2, "9.35": 1.5,
+    "9.36(a)": 24, "9.36(b)": 0.3, "9.36(c)(i)": 0.3, "9.36(c)(ii)": 0.8,
+    "9.36(d)(ii)": 0.1, "9.36(d)(iv)": 0.1, "9.36(d)(v)": 0.1,
+    "9.36(e)": 1, "9.36(f)": 0.3, "9.36(g)": 0.8, "9.36(h)": 0.8,
+    "9.36(i)": 0.5, "9.36(j)": 0.1, "9.36(k)": 0.3, "9.37": 1, "9.38": 0.8,
+    "9.41": 0.3, "9.43": 1,
+}
 
 BUAT_KATA = ("buat", "proses", "pasang", "kilang", "manufactur", "pengilang",
-             "pembuatan", "bina", "kontrak", "makan", "food", "resto",
+             "pembuatan", "kontrak", "makan", "food", "resto",
              "minuman", "roti", "plastik", "kayu", "tekstil", "jahit",
              "cetak", "perabot", "furniture", "furnitur", "factory",
              "pembekal perabot", "wood", "timber")
+
+BINA_KATA = ("pembinaan", "bina", "construction", "kontraktor", "pemaju",
+             "konkrit", "simen", "infrastruktur", "jkr", "cidb")
 
 
 def pilih_profil(nama: str = "", aktiviti: str = "",
                  sektor: str = "") -> tuple[str, dict, dict]:
     """Returns (profile_name, pendapatan_table, belanja_table).
 
-    sektor: "" (auto by keywords), "pembuatan", or "perkhidmatan".
+    sektor: "" (auto by keywords), "pembuatan", "pembinaan",
+    or "perkhidmatan".
     """
     s = (sektor or "").strip().lower()
     if s.startswith("pembuat") or s.startswith("manufact"):
         return "pembuatan", PENDAPATAN_PEMBUATAN, BELANJA_PEMBUATAN
+    if s.startswith("pembina") or s.startswith("bina") \
+            or s.startswith("construct"):
+        return "pembinaan", PENDAPATAN_PEMBINAAN, BELANJA_PEMBINAAN
     if s.startswith("perkhid") or s.startswith("serv"):
         return "perkhidmatan", PENDAPATAN_PERKHIDMATAN, BELANJA_PERKHIDMATAN
     t = f"{nama} {aktiviti}".lower()
+    if any(k in t for k in BINA_KATA):
+        return "pembinaan", PENDAPATAN_PEMBINAAN, BELANJA_PEMBINAAN
     if any(k in t for k in BUAT_KATA):
         return "pembuatan", PENDAPATAN_PEMBUATAN, BELANJA_PEMBUATAN
     return "perkhidmatan", PENDAPATAN_PERKHIDMATAN, BELANJA_PERKHIDMATAN
@@ -136,7 +166,7 @@ def pecah_auto(fields: list[dict], nama: str = "",
     Reads totals from fields themselves: 8.13/8.15 and 9.39/9.44.
     Only fills currently-missing components (and, if `only` is given,
     only fields whose id is in that set — e.g. ticked rows in the GUI).
-    sektor: "" auto, "pembuatan", "perkhidmatan".
+    sektor: "" auto, "pembuatan", "pembinaan", "perkhidmatan".
     Returns (count, profile_name).
     """
     by_id = {f["id"]: f for f in fields}
