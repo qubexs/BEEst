@@ -260,6 +260,23 @@ def _selaras_shift(by_id: dict, stats: dict) -> None:
         _isi("SHIFT::Upah OT", 0, "Tiada jam OT — upah OT RM0")
     elif upah_ot == 0 and jam_ot is None:
         _isi("SHIFT::JAM OT", 0, "Tiada upah OT — jam OT 0")
+    # Headcount <-> shifts: Shif1+2+3 must equal Jumlah pekerja.
+    tot = _num((by_id.get("PEKERJA::Pekerja — Jumlah besar (Total)")
+                or {}).get("value"))
+    s1 = _num((by_id.get("SHIFT::Bil Pekerja Shift 1") or {}).get("value"))
+    s2 = _num((by_id.get("SHIFT::Bil Pekerja Shift 2") or {}).get("value"))
+    s3 = _num((by_id.get("SHIFT::Bil Pekerja Shift 3") or {}).get("value"))
+    if tot is not None:
+        tot = int(round(tot))
+        if s1 is None and s2 == 0 and s3 == 0:
+            _isi("SHIFT::Bil Pekerja Shift 1", tot,
+                 f"Shif 2+3 sifar — semua {tot:g} di Shif 1")
+        elif s1 is None and s2 is None and s3 is None:
+            _isi("SHIFT::Bil Pekerja Shift 1", tot,
+                 f"Andaian 1 shif: semua {tot:g} di Shif 1 "
+                 f"(betulkan jika berbilang shif)")
+            _isi("SHIFT::Bil Pekerja Shift 2", 0, "Andaian 1 shif")
+            _isi("SHIFT::Bil Pekerja Shift 3", 0, "Andaian 1 shif")
 
 
 def selaras_konsistensi(fields: list[dict]) -> dict:
