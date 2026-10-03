@@ -231,8 +231,15 @@ class Viewer(tk.Tk):
             value=cfg.get("hf_model", "Qwen/Qwen2.5-7B-Instruct"))
         self.s_show = tk.BooleanVar(value=False)
 
-        ai = ttk.LabelFrame(root, text=" AI ", padding=10)
-        ai.pack(fill="x", padx=8, pady=8)
+        self.nb_set = ttk.Notebook(root)
+        self.nb_set.pack(fill="both", expand=True)
+        self.tab_set_ai = ttk.Frame(self.nb_set)
+        self.tab_set_gaji = ttk.Frame(self.nb_set)
+        self.nb_set.add(self.tab_set_ai, text="AI")
+        self.nb_set.add(self.tab_set_gaji, text="Skala Gaji")
+
+        ai = ttk.LabelFrame(self.tab_set_ai, text=" AI ", padding=10)
+        ai.pack(fill="both", expand=True, padx=8, pady=8)
         ttk.Label(ai, text="Penyedia:").grid(row=0, column=0, sticky="e")
         ttk.Combobox(ai, textvariable=self.s_prov, width=14,
                      state="readonly",
@@ -297,7 +304,7 @@ class Viewer(tk.Tk):
                    command=self.use_selected_model).pack(side="left", padx=6)
         self.tv_models = ttk.Treeview(ai, columns=("model", "price", "ctx",
                                                    "why"),
-                                      show="headings", height=8)
+                                       show="headings", height=12)
         self.tv_models.grid(row=11, column=0, columnspan=4, sticky="ew",
                             pady=(4, 0))
         for c, wd in (("model", 380), ("price", 110), ("ctx", 80),
@@ -311,7 +318,8 @@ class Viewer(tk.Tk):
         self.model_rows: list[dict] = []
 
         sal = ttk.LabelFrame(
-            root, text=" Skala gaji bulanan ikut jawatan — julat Dari → Hingga (RM) ",
+            self.tab_set_gaji,
+            text=" Skala gaji bulanan ikut jawatan — julat Dari → Hingga (RM) ",
             padding=10)
         sal.pack(fill="both", expand=True, padx=8, pady=(0, 8))
         ttk.Label(sal, text="Jawatan").grid(row=0, column=0, sticky="w")
