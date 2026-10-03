@@ -200,10 +200,13 @@ def semak(fields: list[dict], profil: str = "perkhidmatan") -> list[str]:
             out.append(f"AMARAN Belanja Pekerja/Belanja: RM{wp:g} MELEBIHI "
                        f"belanja RM{belanja:g} — mustahil, semak semula")
 
-    # 16. pekerja shif vs jumlah pekerja (semua shif diisi baru disemak)
+    # 16. pekerja shif vs jumlah pekerja (Shif 1 WAJIB berisi)
     sh = [_num((by_id.get(f"SHIFT::Bil Pekerja Shift {i}") or {})
                .get("value")) for i in (1, 2, 3)]
-    if tot_p is None or any(v is None for v in sh):
+    if sh[0] is None:
+        out.append("KRITIKAL Shif 1 wajib berisi: bilangan pekerja Shift 1 "
+                   "kosong — isi atau Jana seksyen SHIFT")
+    elif tot_p is None or sh[1] is None or sh[2] is None:
         out.append("SKIP Shif1+2+3=Jumlah: data tak cukup")
     elif sum(sh) == tot_p:
         out.append(f"OK Shif1+2+3=Jumlah: {sh[0]:g}+{sh[1]:g}+{sh[2]:g}="
