@@ -50,6 +50,8 @@ def build_context(nama: str, tahun: int, meta: dict, dossier: dict) -> dict:
             "9.39 MESTI SAMA dengan 9.44; "
             "Kategori pekerja L (siri PEKERJA::L::...) MESTI tambah tepat "
             "kepada Pekerja Lelaki (L); sama untuk P — JANGAN lebih/kurang; "
+            "L+P MESTI = Jumlah; Warga+BWN MESTI = Jumlah; "
+            "Shif1+2+3 MESTI = Jumlah; tahap PENDIDIKAN MESTI = Jumlah; "
             "Jawatan dengan 0 pekerja MESTI dikosongkan (gaji kosong, "
             "BUKAN RM0); "
             "Shif1+Shif2+Shif3 MESTI SAMA dengan Jumlah pekerja; "

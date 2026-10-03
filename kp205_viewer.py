@@ -1026,7 +1026,15 @@ class Viewer(tk.Tk):
             messagebox.showwarning("Deploy", "Tiada baris bertanda + bernilai.")
             return
         self._set_busy(True, f"Deploy {n_ready} nilai ke XLSX ...")
-        self._semak_rentas()
+        n_krit = self._semak_rentas()
+        if n_krit and not messagebox.askokcancel(
+                "Deploy — semakan kritikal",
+                f"{n_krit} KRITIKAL: bilangan pekerja tidak selaras antara "
+                f"seksyen (lihat Terminal).\n\nTeruskan deploy juga?"):
+            self._set_busy(False)
+            self.term_say("--", "WARN", "Deploy dibatalkan pengguna "
+                                       "(semakan kritikal).")
+            return
         force = self.d_force.get()
         sheet = self.d_sheet.get()
         ovkey = self._dep_template_key()
@@ -1629,8 +1637,11 @@ class Viewer(tk.Tk):
             messagebox.showinfo("KP205", f"Seksyen {sec} siap: {nota}\n"
                                         f"Semakan rentas-seksyen di Terminal.")
 
-    def _semak_rentas(self):
-        """Cross-section validation of the whole table -> Terminal."""
+    def _semak_rentas(self) -> int:
+        """Cross-section validation of the whole table -> Terminal.
+
+        Returns the KRITIKAL count (headcount mismatches block Deploy).
+        """
         try:
             from kp205.semakan import semak
             from kp205.pecahan import pilih_profil
@@ -1638,16 +1649,21 @@ class Viewer(tk.Tk):
             lines = semak(self._to_writer_fields(), prof)
         except Exception as e:
             self.term_say("--", "WARN", f"Semakan gagal: {e}")
-            return
+            return 0
+        krit = [ln for ln in lines if ln.startswith("KRITIKAL")]
         bad = [ln for ln in lines if ln.startswith("AMARAN")]
         okc = sum(1 for ln in lines if ln.startswith("OK"))
+        for ln in krit:
+            self.term_say("--", "ERR", "Rentasan: " + ln)
         for ln in bad[:15]:
             self.term_say("--", "WARN", "Rentasan: " + ln)
         if len(bad) > 15:
             self.term_say("--", "WARN",
                           f"Rentasan: +{len(bad) - 15} amaran lain.")
-        self.term_say("--", "OK" if not bad else "INFO",
-                      f"Rentasan {prof}: {okc} OK, {len(bad)} AMARAN.")
+        self.term_say("--", "OK" if not (krit or bad) else "INFO",
+                      f"Rentasan {prof}: {okc} OK, {len(krit)} KRITIKAL, "
+                      f"{len(bad)} AMARAN.")
+        return len(krit)
 
     # ---------- background run ----------
     def _poll(self):

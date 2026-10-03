@@ -132,6 +132,43 @@ def _selaras_pekerja(by_id: dict, fields: list[dict],
         # else: real category data — leave mismatch to validation warning.
 
 
+def _selaras_pendidikan(by_id: dict, fields: list[dict],
+                       stats: dict) -> None:
+    """Rescale education breakdown to Jumlah pekerja (weak sources only)."""
+    tot_f = by_id.get("PEKERJA::Pekerja — Jumlah besar (Total)")
+    if tot_f is None:
+        return
+    tot = _num(tot_f.get("value"))
+    if tot is None:
+        return
+    tot = int(round(tot))
+    kats = [f for f in fields if f["id"].startswith("PENDIDIKAN::")]
+    if not kats:
+        return
+    vals = {f["id"]: _num(f.get("value")) for f in kats}
+    if any(v is None for v in vals.values()):
+        return  # incomplete — SKIP, not guess
+    if int(round(sum(vals.values()))) == tot:
+        return
+    if not all(not _kuat(by_id[fid]) for fid in vals):
+        return  # real data — leave to KRITIKAL warning
+    if tot == 0:
+        for f in kats:
+            f.update(value=0, raw="0", missing=False,
+                     source="Selaras pekerja", confidence="SEDARHANA",
+                     note="Jumlah sifar — tahap disifarkan")
+            stats["pekerja"] += 1
+        return
+    weights = {fid: (v if v > 0 else 0.01) for fid, v in vals.items()}
+    agih = _agih_baki(tot, weights)
+    for f in kats:
+        v = agih[f["id"]]
+        f.update(value=v, raw=str(v), missing=False,
+                 source="Selaras pekerja", confidence="SEDARHANA",
+                 note=f"Skala semula supaya jumlah tahap = {tot:g}")
+        stats["pekerja"] += 1
+
+
 def _selaras_gaji(by_id: dict, stats: dict) -> None:
     """Clear wage values on zero-headcount posts; fix statutory ratios."""
     try:
@@ -234,6 +271,7 @@ def selaras_konsistensi(fields: list[dict]) -> dict:
     _kunci_jumlah(by_id, f"{PB}::9.44", f"{PB}::9.39",
                   "JUMLAH BESAR belanja", stats)
     _selaras_pekerja(by_id, fields, stats)
+    _selaras_pendidikan(by_id, fields, stats)
     _selaras_gaji(by_id, stats)
     _selaras_shift(by_id, stats)
     return stats

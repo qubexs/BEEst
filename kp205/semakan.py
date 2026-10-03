@@ -123,7 +123,7 @@ def semak(fields: list[dict], profil: str = "perkhidmatan") -> list[str]:
     elif L + P == tot_p:
         out.append(f"OK Pekerja L+P=Jumlah: {L:g}+{P:g}={tot_p:g}")
     else:
-        out.append(f"AMARAN Pekerja L+P=Jumlah: {L:g}+{P:g}={L + P:g} "
+        out.append(f"KRITIKAL Pekerja L+P=Jumlah: {L:g}+{P:g}={L + P:g} "
                    f"≠ Jumlah {tot_p:g} — selaraskan")
 
     # 11. warga + BWN = jumlah
@@ -134,7 +134,7 @@ def semak(fields: list[dict], profil: str = "perkhidmatan") -> list[str]:
     elif warga + bwn == tot_p:
         out.append(f"OK Warga+BWN=Jumlah: {warga:g}+{bwn:g}={tot_p:g}")
     else:
-        out.append(f"AMARAN Warga+BWN=Jumlah: {warga:g}+{bwn:g}={warga + bwn:g} "
+        out.append(f"KRITIKAL Warga+BWN=Jumlah: {warga:g}+{bwn:g}={warga + bwn:g} "
                    f"≠ Jumlah {tot_p:g} — selaraskan")
 
     # 12/13. jumlah kategori L/P = jumlah L/P
@@ -159,7 +159,7 @@ def semak(fields: list[dict], profil: str = "perkhidmatan") -> list[str]:
         elif s == tot_g:
             out.append(f"OK Kategori {tag}=Jumlah {tag}: {s:g}={tot_g:g}")
         else:
-            out.append(f"AMARAN Kategori {tag}=Jumlah {tag}: jumlah kategori "
+            out.append(f"KRITIKAL Kategori {tag}=Jumlah {tag}: jumlah kategori "
                        f"{s:g} ≠ {tot_g:g} — selaraskan")
 
     # 14. gaji bulanan setiap jawatan dalam julat skala
@@ -209,7 +209,7 @@ def semak(fields: list[dict], profil: str = "perkhidmatan") -> list[str]:
         out.append(f"OK Shif1+2+3=Jumlah: {sh[0]:g}+{sh[1]:g}+{sh[2]:g}="
                    f"{tot_p:g}")
     else:
-        out.append(f"AMARAN Shif1+2+3=Jumlah: {sh[0]:g}+{sh[1]:g}+{sh[2]:g}="
+        out.append(f"KRITIKAL Shif1+2+3=Jumlah: {sh[0]:g}+{sh[1]:g}+{sh[2]:g}="
                    f"{sum(sh):g} ≠ Jumlah {tot_p:g} — selaraskan")
 
     # 17. jumlah bil gaji (orang x kadar x 12) vs 9.36(a) gaji tahunan
@@ -239,7 +239,7 @@ def semak(fields: list[dict], profil: str = "perkhidmatan") -> list[str]:
     elif abs(bil - gaji) <= max(1000, 0.05 * gaji):
         out.append(f"OK Bil Gaji/9.36(a): RM{bil:g} ≈ RM{gaji:g}")
     else:
-        out.append(f"AMARAN Bil Gaji/9.36(a): RM{bil:g} (orang×kadar×12) "
+        out.append(f"KRITIKAL Bil Gaji/9.36(a): RM{bil:g} (orang×kadar×12) "
                    f"≠ 9.36(a) RM{gaji:g} — selaraskan")
 
     # 18. JAM OT vs Upah OT: sifar serentak + kadar munasabah
@@ -291,4 +291,26 @@ def semak(fields: list[dict], profil: str = "perkhidmatan") -> list[str]:
         else:
             out.append(f"AMARAN BWN/Levi: RM{seorg:g}/orang luar julat "
                        f"RM300–RM6000 — semak kadar levi")
+
+    # 21. jumlah tahap pendidikan = jumlah pekerja
+    if tot_p is None:
+        out.append("SKIP Pendidikan=Jumlah: data tak cukup")
+    else:
+        s, miss = 0, []
+        for f in fields:
+            if f["id"].startswith("PENDIDIKAN::"):
+                v = _num(f.get("value"))
+                if v is None:
+                    miss.append(f["label"])
+                else:
+                    s += v
+        if miss:
+            out.append("SKIP Pendidikan=Jumlah: kosong: "
+                       + ", ".join(miss[:4])
+                       + (" ..." if len(miss) > 4 else ""))
+        elif s == tot_p:
+            out.append(f"OK Pendidikan=Jumlah: {s:g}={tot_p:g}")
+        else:
+            out.append(f"KRITIKAL Pendidikan=Jumlah: jumlah tahap {s:g} "
+                       f"≠ Jumlah {tot_p:g} — selaraskan")
     return out
