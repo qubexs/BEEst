@@ -80,7 +80,7 @@ class Viewer(tk.Tk):
         self.tab_set = ttk.Frame(self.nb)
         self.tab_prof = ttk.Frame(self.nb)
         self.tab_dep = ttk.Frame(self.nb)
-        self.nb.add(self.tab_main, text="KP205")
+        self.nb.add(self.tab_main, text="Est")
         self.nb.add(self.tab_term, text="Terminal")
         self.nb.add(self.tab_set, text="Tetapan")
         self.nb.add(self.tab_prof, text="Profil")
