@@ -45,7 +45,7 @@ COLS = ("use", "field", "value", "source", "conf", "note")
 class Viewer(tk.Tk):
     def __init__(self, initial: str = ""):
         super().__init__()
-        self.title("KP205 — Borang & Terminal")
+        self.title("Beest v1.0")
         self.geometry("1220x760")
         self.data: dict | None = None
         self.view: list = []

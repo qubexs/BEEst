@@ -3,7 +3,7 @@ from __future__ import annotations
 
 STRINGS = {
     "ms": {
-        "app_title": "BE 2026 - Isi borang (semak pratonton sebelum eksport)",
+        "app_title": "Beest v1.0",
         "tab_main": "Borang",
         "tab_settings": "Tetapan",
         "tab_terminal": "Terminal",
@@ -130,7 +130,7 @@ STRINGS = {
         "default_export_name": "BE2026_lengkap.xlsx",
     },
     "en": {
-        "app_title": "BE 2026 - Fill form (review preview before export)",
+        "app_title": "Beest v1.0",
         "tab_main": "Form",
         "tab_settings": "Settings",
         "tab_terminal": "Terminal",
