@@ -1930,13 +1930,8 @@ class Viewer(tk.Tk):
 if __name__ == "__main__":
     from auth import ensure_default, ask_login
     ensure_default()
-    _gate = tk.Tk()
-    _gate.withdraw()
-    try:
-        _ok = ask_login(_gate)
-    finally:
-        _gate.destroy()
-    if not _ok:
+    print("BEEst — tetingkap login dibuka (admin / 7717) ...", flush=True)
+    if not ask_login():
         sys.exit(1)
     initial = sys.argv[1] if len(sys.argv) > 1 else ""
     Viewer(initial).mainloop()

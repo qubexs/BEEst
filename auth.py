@@ -71,58 +71,70 @@ def set_password(username: str, new_password: str) -> bool:
 
 
 def ask_login(parent=None) -> bool:
-    """Modal login dialog. Returns True on success, False on cancel/fail."""
+    """Modal login dialog (own taskbar window). True on success.
+
+    `parent` is accepted for backward compatibility but ignored — the
+    dialog is always a real Tk root so Windows reliably shows it.
+    """
     import tkinter as tk
     from tkinter import ttk
 
     ensure_default()
-    result = {"ok": False, "tries": 0}
-
-    dlg = tk.Toplevel(parent)
-    dlg.title("Log Masuk / Login")
-    dlg.geometry("320x190")
-    dlg.resizable(False, False)
-    dlg.transient(parent)
-    dlg.grab_set()
     try:
-        dlg.focus_force()
+        root = tk.Tk()
+    except Exception as e:
+        print(f"UI tidak dapat dibuka (tiada paparan?): {e}")
+        return False
+    result = {"ok": False, "tries": 0}
+    root.title("BEEst — Log Masuk / Login")
+    root.geometry("340x200")
+    root.resizable(False, False)
+    try:
+        root.attributes("-topmost", True)
+        root.after(1500, lambda: root.attributes("-topmost", False))
+        x = (root.winfo_screenwidth() - 340) // 2
+        y = (root.winfo_screenheight() - 200) // 2
+        root.geometry(f"+{x}+{y}")
+        root.lift()
+        root.focus_force()
     except Exception:
         pass
 
-    ttk.Label(dlg, text="Nama pengguna:").pack(anchor="w", padx=16, pady=(14, 0))
-    ent_u = ttk.Entry(dlg, width=30)
+    ttk.Label(root, text="Nama pengguna:").pack(anchor="w", padx=16,
+                                                pady=(14, 0))
+    ent_u = ttk.Entry(root, width=32)
     ent_u.pack(padx=16, pady=2)
     ent_u.insert(0, DEFAULT_USER)
-    ttk.Label(dlg, text="Kata laluan:").pack(anchor="w", padx=16, pady=(6, 0))
-    ent_p = ttk.Entry(dlg, width=30, show="*")
+    ttk.Label(root, text="Kata laluan:").pack(anchor="w", padx=16, pady=(6, 0))
+    ent_p = ttk.Entry(root, width=32, show="*")
     ent_p.pack(padx=16, pady=2)
-    lbl = ttk.Label(dlg, text="", foreground="#b3261e")
+    lbl = ttk.Label(root, text="", foreground="#b3261e")
     lbl.pack(padx=16)
 
     def _submit(_e=None):
         if verify(ent_u.get(), ent_p.get()):
             result["ok"] = True
-            dlg.destroy()
+            root.destroy()
             return
         result["tries"] += 1
         left = MAX_ATTEMPTS - result["tries"]
         if left <= 0:
-            dlg.destroy()
+            root.destroy()
             return
         lbl.configure(text=f"Salah — tinggal {left} cubaan.")
         ent_p.delete(0, "end")
         ent_p.focus()
 
     def _cancel():
-        dlg.destroy()
+        root.destroy()
 
-    bar = ttk.Frame(dlg)
+    bar = ttk.Frame(root)
     bar.pack(fill="x", padx=16, pady=8)
     ttk.Button(bar, text="Masuk", command=_submit).pack(side="left")
     ttk.Button(bar, text="Batal", command=_cancel).pack(side="right")
     ent_p.focus()
-    dlg.bind("<Return>", _submit)
-    dlg.bind("<Escape>", lambda e: _cancel())
-    dlg.protocol("WM_DELETE_WINDOW", _cancel)
-    dlg.wait_window()
+    root.bind("<Return>", _submit)
+    root.bind("<Escape>", lambda e: _cancel())
+    root.protocol("WM_DELETE_WINDOW", _cancel)
+    root.mainloop()
     return bool(result["ok"])
