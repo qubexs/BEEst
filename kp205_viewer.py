@@ -1232,6 +1232,7 @@ class Viewer(tk.Tk):
                 v = self._num_atau_tiada(g.get("value"))
                 if v is None:
                     continue
+                # strict > : ties keep the TOP one (first in table order)
                 if best_v is None or v > best_v:
                     best, best_v = gfid, v
             return best
