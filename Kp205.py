@@ -99,6 +99,9 @@ def pick_model(cfg: dict, cli_provider: str = "auto") -> tuple[str, str]:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Kp205 interactive estimator.")
+    from version import __version__ as APP_VERSION
+    ap.add_argument("--version", action="version",
+                    version=f"%(prog)s {APP_VERSION}")
     ap.add_argument("--company", default="")
     ap.add_argument("--year", type=int, default=0)
     ap.add_argument("--out", default=str(DEFAULT_OUT))

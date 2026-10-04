@@ -78,6 +78,7 @@ def ask_login(parent=None) -> bool:
     """
     import tkinter as tk
     from tkinter import ttk
+    from version import __version__ as APP_VERSION
 
     ensure_default()
     try:
@@ -86,7 +87,7 @@ def ask_login(parent=None) -> bool:
         print(f"UI tidak dapat dibuka (tiada paparan?): {e}")
         return False
     result = {"ok": False, "tries": 0}
-    root.title("BEEst — Log Masuk / Login")
+    root.title(f"BEEst v{APP_VERSION} — Log Masuk / Login")
     root.geometry("340x200")
     root.resizable(False, False)
     try:

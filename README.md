@@ -1,4 +1,4 @@
-# BEEst — KP205 AI Estimator + BE2026 XLSX Filler
+# BEEst v1.0.1 — KP205 AI Estimator + BE2026 XLSX Filler
 
 Desktop apps (Tkinter): **web search + AI → preview/estimate → validate → export**
 for Malaysia DOSM **KP205** surveys and BE2026 XLSX forms. No freezing —

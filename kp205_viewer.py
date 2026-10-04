@@ -37,6 +37,7 @@ from search.syarikat import tulis_dosier, slug
 from settings_store import load as load_settings
 from activity import subscribe, Stopped
 import Kp205 as engine
+from version import __version__ as APP_VERSION
 
 DEFAULT_REPORT = Path("C:/Users/tokki/Downloads/x205.txt")
 COLS = ("use", "field", "value", "source", "conf", "note")
@@ -45,7 +46,7 @@ COLS = ("use", "field", "value", "source", "conf", "note")
 class Viewer(tk.Tk):
     def __init__(self, initial: str = ""):
         super().__init__()
-        self.title("Beest v1.0")
+        self.title(f"Beest v{APP_VERSION}")
         self.geometry("1220x760")
         self.data: dict | None = None
         self.view: list = []
@@ -99,6 +100,13 @@ class Viewer(tk.Tk):
         ttk.Button(top, text="Browse...", command=self.browse).pack(side="left")
         ttk.Button(top, text="Muat", command=self.load_current).pack(side="left", padx=6)
         ttk.Button(top, text="Simpan", command=self.save_file).pack(side="left")
+        self.lbl_ver = ttk.Label(top, text=f"v{APP_VERSION}", foreground="gray")
+        self.lbl_ver.pack(side="right", padx=(6, 0))
+        self.btn_upd = ttk.Button(top, text="✓", width=3,
+                                  command=self.update_click)
+        self.btn_upd.pack(side="right")
+        self._upd_info: tuple | None = None
+        threading.Thread(target=self._update_silent, daemon=True).start()
 
         gen = ttk.LabelFrame(root, text=" Jana Laporan Baru ", padding=8)
         gen.pack(fill="x", padx=8, pady=(0, 4))
@@ -1699,6 +1707,77 @@ class Viewer(tk.Tk):
                       f"Rentasan {prof}: {okc} OK, {len(krit)} KRITIKAL, "
                       f"{len(bad)} AMARAN.")
         return len(krit)
+
+    # ---------- kemas kini dalam aplikasi ----------
+    def _update_silent(self):
+        """Silent startup check: only lights the arrow if update exists."""
+        try:
+            from update_check import check_remote
+            info = check_remote()
+        except Exception:
+            return
+        self._bg.put(lambda: self._update_state(info))
+
+    def _update_state(self, info):
+        self._upd_info = info
+        has, ver = info[0], info[1]
+        if has:
+            self.btn_upd.configure(text=f"↓ {ver}")
+            self.term_say("--", "INFO",
+                          f"Kemas kini tersedia: {ver} — tekan ↓ untuk pratonton.")
+        else:
+            self.btn_upd.configure(text="✓")
+
+    def update_click(self):
+        """Manual check (or preview when an update is already known)."""
+        info = self._upd_info
+        if info is None or info[0] is not True:
+            self.term_say("--", "INFO", "Semak kemas kini ...")
+            threading.Thread(target=self._update_silent, daemon=True).start()
+            if info is not None and info[0] is False:
+                messagebox.showinfo("Kemas Kini",
+                                    f"Sudah terkini (v{APP_VERSION}).")
+            return
+        self._update_preview(info[1], info[2])
+
+    def _update_preview(self, ver, notes):
+        win = tk.Toplevel(self)
+        win.title(f"Kemas kini {ver} tersedia")
+        win.geometry("460x380")
+        ttk.Label(win, text=f"Beest v{APP_VERSION}  →  {ver}",
+                  font=("", 12, "bold")).pack(anchor="w", padx=12, pady=(10, 2))
+        ttk.Label(win, text="Perubahan (fail anda tidak akan disentuh):",
+                  foreground="gray").pack(anchor="w", padx=12)
+        body = tk.Text(win, wrap="word", font=("Consolas", 10), height=12)
+        body.pack(fill="both", expand=True, padx=12, pady=6)
+        body.insert("1.0", "\n".join(f"• {n}" for n in notes) or "(tiada nota)")
+        body.configure(state="disabled")
+        bar = ttk.Frame(win, padding=(12, 0, 12, 12))
+        bar.pack(fill="x")
+        ttk.Button(bar, text="Update Now",
+                   command=lambda: self._update_apply(win)).pack(side="left")
+        ttk.Button(bar, text="Later",
+                   command=win.destroy).pack(side="right")
+
+    def _update_apply(self, win):
+        win.destroy()
+        self.term_say("--", "INFO", "Muat turun kemas kini di latar ...")
+        self.lbl_ver.configure(text="↓ memuat...")
+
+        def worker():
+            try:
+                from update_check import do_update
+                ok, msg = do_update()
+            except Exception as e:
+                ok, msg = False, str(e)
+            self._bg.put(lambda: self._update_done(ok, msg))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _update_done(self, ok, msg):
+        self.lbl_ver.configure(text=f"v{APP_VERSION}")
+        self.term_say("--", "OK" if ok else "WARN", "Update: " + msg)
+        messagebox.showinfo("Kemas Kini", msg)
 
     # ---------- background run ----------
     def _poll(self):

@@ -1,9 +1,11 @@
 """Dua bahasa / Two languages: Bahasa Melayu (ms) + English (en)."""
 from __future__ import annotations
 
+from version import __version__ as APP_VERSION
+
 STRINGS = {
     "ms": {
-        "app_title": "Beest v1.0",
+        "app_title": f"Beest v{APP_VERSION}",
         "tab_main": "Borang",
         "tab_settings": "Tetapan",
         "tab_terminal": "Terminal",
@@ -130,7 +132,7 @@ STRINGS = {
         "default_export_name": "BE2026_lengkap.xlsx",
     },
     "en": {
-        "app_title": "Beest v1.0",
+        "app_title": f"Beest v{APP_VERSION}",
         "tab_main": "Form",
         "tab_settings": "Settings",
         "tab_terminal": "Terminal",
