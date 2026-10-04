@@ -299,7 +299,7 @@ def main() -> int:
     if any(kstat.values()):
         print(f"  selaras: jumlah {kstat['jumlah']}, pekerja {kstat['pekerja']}, "
               f"gaji {kstat['gaji']}, KWSP/PERKESO {kstat['kwsp']}, "
-              f"shif {kstat.get('shift', 0)}.")
+              f"shif {kstat.get('shift', 0)}, aset {kstat.get('aset', 0)}.")
 
     # ---- step 2c: selaras Untung = Pendapatan - Belanja (tepat) ----
     from kp205.anchors import selaras_untung

@@ -1525,10 +1525,12 @@ class Viewer(tk.Tk):
         L = g("PEKERJA::Pekerja Lelaki (L)")
         P = g("PEKERJA::Pekerja Perempuan (P)")
         T = g("PEKERJA::Pekerja — Jumlah besar (Total)")
+        A = g("ASET::Jumlah")
         fmt = lambda v: f"{v:g}" if v is not None else "?"
         return (f"RENTAS-SEKSYEN (rujukan silang — WAJIB konsisten, JANGAN ubah "
                 f"seksyen lain): Hasil={fmt(h)} Belanja={fmt(b)} "
-                f"L={fmt(L)} P={fmt(P)} Jumlah={fmt(T)}.")
+                f"L={fmt(L)} P={fmt(P)} Jumlah={fmt(T)} Aset={fmt(A)} "
+                f"(komponen ASET MESTI tambah tepat kepada Aset).")
 
     def jana_seksyen(self):
         """Fill the dropdown-selected section only (Semua = every section).
@@ -1638,7 +1640,8 @@ class Viewer(tk.Tk):
                       f"Jana seksyen {sec}: {nota} "
                       f"(selaras: jumlah {kstat['jumlah']}, "
                       f"pekerja {kstat['pekerja']}, gaji {kstat['gaji']}, "
-                      f"shif {kstat.get('shift', 0)}). "
+                      f"shif {kstat.get('shift', 0)}, "
+                      f"aset {kstat.get('aset', 0)}). "
                       f"Tekan Simpan untuk tulis fail.")
         self._semak_rentas()
         if not stopped:
@@ -1914,7 +1917,8 @@ class Viewer(tk.Tk):
                     "--", "OK", f"Selaras: jumlah {ks['jumlah']}, "
                                 f"pekerja {ks['pekerja']}, gaji {ks['gaji']}, "
                                 f"KWSP/PERKESO {ks['kwsp']}, "
-                                f"shif {ks.get('shift', 0)}."))
+                                f"shif {ks.get('shift', 0)}, "
+                                f"aset {ks.get('aset', 0)}."))
             from kp205.anchors import selaras_untung
             selaras_untung(fields)  # Untung = Pendapatan - Belanja (tepat)
             if self._stop.is_set():

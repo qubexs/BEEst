@@ -14,6 +14,9 @@ cannot guarantee on its own:
    not carry wage values, otherwise "Gaji luar julat skala" fires.
    KWSP (13%) / PERKESO (1.75%) are recomputed from gaji when the
    current value is only a weak guess.
+4. Jumlah aset: ASET::Jumlah wins — weak asset components are
+   largest-remainder rescaled to it; a missing Jumlah is set from the
+   component sum.
 
 Only weak sources are ever overwritten (AI/pecahan/offline/terbitan);
 real data (Input pengguna, FAIL_TXT, Suntingan pengguna, Web:) wins.
@@ -238,6 +241,56 @@ def _selaras_gaji(by_id: dict, stats: dict) -> None:
                 stats["kwsp"] += 1
 
 
+def _selaras_aset(by_id: dict, fields: list[dict],
+                  stats: dict) -> None:
+    """ASET components must add up to ASET::Jumlah (Jumlah wins).
+
+    Jumlah known + components all filled + all weak -> rescale to Jumlah.
+    Jumlah missing + components all filled -> Jumlah = sum (Terbitan).
+    Strong components are never touched (mismatch -> KRITIKAL check 22).
+    """
+    tot_f = by_id.get("ASET::Jumlah")
+    if tot_f is None:
+        return
+    komps = [f for f in fields
+             if f["id"].startswith("ASET::") and f["id"] != "ASET::Jumlah"]
+    if not komps:
+        return
+    vals = {f["id"]: _num(f.get("value")) for f in komps}
+    if any(v is None for v in vals.values()):
+        return  # incomplete — SKIP, not guess
+    tot = _num(tot_f.get("value"))
+    if tot is None:
+        s = sum(vals.values())
+        iv = int(round(s))
+        tot_f.update(value=iv, raw=str(iv), missing=False,
+                     source="Terbitan (aset)", confidence="SEDARHANA",
+                     note=f"Jumlah aset = hasil tambah {len(komps)} komponen "
+                          f"RM{iv:g}")
+        stats["aset"] += 1
+        return
+    tot = int(round(tot))
+    if int(round(sum(vals.values()))) == tot:
+        return
+    if not all(not _kuat(by_id[fid]) for fid in vals):
+        return  # real data — leave to KRITIKAL warning
+    if tot == 0:
+        for f in komps:
+            f.update(value=0, raw="0", missing=False,
+                     source="Selaras aset", confidence="SEDARHANA",
+                     note="Jumlah sifar — komponen disifarkan")
+            stats["aset"] += 1
+        return
+    weights = {fid: (v if v > 0 else 0.01) for fid, v in vals.items()}
+    agih = _agih_baki(tot, weights)
+    for f in komps:
+        v = agih[f["id"]]
+        f.update(value=v, raw=str(v), missing=False,
+                 source="Selaras aset", confidence="SEDARHANA",
+                 note=f"Skala semula supaya jumlah = RM{tot:g}")
+        stats["aset"] += 1
+
+
 def _selaras_shift(by_id: dict, stats: dict) -> None:
     """Derive exact shift relations (missing fields only, never overwrite)."""
     def _isi(fid: str, v, note: str):
@@ -281,7 +334,8 @@ def _selaras_shift(by_id: dict, stats: dict) -> None:
 
 def selaras_konsistensi(fields: list[dict]) -> dict:
     """Run all reconciliation passes. Returns stats dict."""
-    stats = {"jumlah": 0, "pekerja": 0, "gaji": 0, "kwsp": 0, "shift": 0}
+    stats = {"jumlah": 0, "pekerja": 0, "gaji": 0, "kwsp": 0, "shift": 0,
+             "aset": 0}
     by_id = {f["id"]: f for f in fields}
     _kunci_jumlah(by_id, f"{PP}::8.15", f"{PP}::8.13",
                   "JUMLAH BESAR hasil", stats)
@@ -291,4 +345,5 @@ def selaras_konsistensi(fields: list[dict]) -> dict:
     _selaras_pendidikan(by_id, fields, stats)
     _selaras_gaji(by_id, stats)
     _selaras_shift(by_id, stats)
+    _selaras_aset(by_id, fields, stats)
     return stats

@@ -316,4 +316,28 @@ def semak(fields: list[dict], profil: str = "perkhidmatan") -> list[str]:
         else:
             out.append(f"KRITIKAL Pendidikan=Jumlah: jumlah tahap {s:g} "
                        f"≠ Jumlah {tot_p:g} — selaraskan")
+
+    # 22. jumlah komponen aset = ASET::Jumlah (Jumlah menang)
+    aset_tot = _num((by_id.get("ASET::Jumlah") or {}).get("value"))
+    komps = [f for f in fields
+             if f["id"].startswith("ASET::") and f["id"] != "ASET::Jumlah"]
+    if aset_tot is None or not komps:
+        out.append("SKIP Aset Komponen=Jumlah: data tak cukup")
+    else:
+        s, miss = 0, []
+        for f in komps:
+            v = _num(f.get("value"))
+            if v is None:
+                miss.append(f["label"])
+            else:
+                s += v
+        if miss:
+            out.append("SKIP Aset Komponen=Jumlah: kosong: "
+                       + ", ".join(miss[:4])
+                       + (" ..." if len(miss) > 4 else ""))
+        elif s == aset_tot:
+            out.append(f"OK Aset Komponen=Jumlah: RM{s:g}=RM{aset_tot:g}")
+        else:
+            out.append(f"KRITIKAL Aset Komponen=Jumlah: RM{s:g} "
+                       f"≠ Jumlah RM{aset_tot:g} — selaraskan")
     return out
