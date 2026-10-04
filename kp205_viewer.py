@@ -190,7 +190,8 @@ class Viewer(tk.Tk):
         self.tv.bind("<Double-1>", self._edit_value)
         ttk.Label(root, text="Petua: dwiklik nilai untuk sunting; untick "
                              "kosongkan nilai (pendapatan dilipat ke 8.1, "
-                             "belanja ke 9.1).",
+                             "belanja ke 9.1, aset ke nilai tertinggi "
+                             "bertanda); tick semula memulihkan.",
                   foreground="gray").pack(anchor="w", padx=8)
 
     def _build_terminal(self, root):
@@ -1187,14 +1188,16 @@ class Viewer(tk.Tk):
     _PINDAH_ABSORBER = {"PENDAPATAN": "PENDAPATAN::8.1",
                         "PERBELANJAAN": "PERBELANJAAN::9.1"}
     # Absorbers/totals/%-subcodes: kosong only, never fold (folding a %
-    # into an RM total would corrupt it).
+    # into an RM total would corrupt it). ASET::Jumlah too — components
+    # fold into the highest TICKED component, never into the total.
     _TANPA_PINDAH = {"PENDAPATAN::8.1", "PENDAPATAN::8.13",
                      "PENDAPATAN::8.15", "PENDAPATAN::Untung::Semasa",
                      "PENDAPATAN::Untung::Sebelum", "PENDAPATAN::8.1.1",
                      "PENDAPATAN::8.1.2", "PENDAPATAN::8.2.2",
                      "PENDAPATAN::8.2.4", "PERBELANJAAN::9.1",
                      "PERBELANJAAN::9.39", "PERBELANJAAN::9.44",
-                     "PERBELANJAAN::9.12(a)", "PERBELANJAAN::9.12(b)"}
+                     "PERBELANJAAN::9.12(a)", "PERBELANJAAN::9.12(b)",
+                     "ASET::Jumlah"}
 
     def _num_atau_tiada(self, v):
         try:
@@ -1205,13 +1208,33 @@ class Viewer(tk.Tk):
             return None
 
     def _boleh_pindah(self, fid: str) -> str | None:
-        """Absorber fid if this component's value folds, else None."""
+        """Absorber fid if this component's value folds, else None.
+
+        PENDAPATAN -> 8.1, PERBELANJAAN -> 9.1, ASET -> highest ticked
+        ASET component (never ASET::Jumlah, never itself).
+        """
         if not fid or fid in self._TANPA_PINDAH:
             return None
         if fid.startswith("PENDAPATAN::8."):
             return self._PINDAH_ABSORBER["PENDAPATAN"]
         if fid.startswith("PERBELANJAAN::9."):
             return self._PINDAH_ABSORBER["PERBELANJAAN"]
+        if fid.startswith("ASET::"):
+            best, best_v = None, None
+            for g in (self.data or {}).get("fields", []):
+                gfid = g.get("fid") or g.get("id") or ""
+                if gfid == fid or gfid == "ASET::Jumlah":
+                    continue
+                if not gfid.startswith("ASET::"):
+                    continue
+                if not g.get("include", True) or g.get("missing"):
+                    continue
+                v = self._num_atau_tiada(g.get("value"))
+                if v is None:
+                    continue
+                if best_v is None or v > best_v:
+                    best, best_v = gfid, v
+            return best
         return None
 
     def _buang_tanda_satu(self, f) -> None:
