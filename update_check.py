@@ -17,8 +17,12 @@ from pathlib import Path
 
 import version as _local
 
-FEED_URL = ("https://raw.githubusercontent.com/qubexs/BEEst/"
-            "master/version.py")
+FEED_URLS = [
+    "https://github.com/qubexs/BEEst/raw/refs/heads/master/version.py",
+    ("https://raw.githubusercontent.com/qubexs/BEEst/"
+     "master/version.py"),
+]
+FEED_URL = FEED_URLS[0]
 TIMEOUT = 15
 ROOT = Path(__file__).resolve().parent
 
@@ -51,18 +55,23 @@ def _newer(remote: str, local: str) -> bool:
 
 def check_remote() -> tuple[bool | None, str, list[str], str]:
     """Returns (has_update|None offline, remote_ver, changelog, msg)."""
-    try:
-        import requests
-        r = requests.get(FEED_URL, timeout=TIMEOUT)
-        r.raise_for_status()
-        ver, notes = _parse_feed(r.text)
-        if not ver:
-            return None, "", [], "suapan versi tidak dapat dibaca"
-        if _newer(ver, local_version()):
-            return True, ver, notes, f"kemas kini tersedia: {ver}"
-        return False, ver, [], f"sudah terkini ({local_version()})"
-    except Exception as e:
-        return None, "", [], f"semakan dilangkau: {e}"
+    last_err: Exception | None = None
+    for url in FEED_URLS:
+        try:
+            import requests
+            r = requests.get(url, timeout=TIMEOUT)
+            r.raise_for_status()
+            ver, notes = _parse_feed(r.text)
+            if not ver:
+                last_err = ValueError("suapan versi tidak dapat dibaca")
+                continue
+            if _newer(ver, local_version()):
+                return True, ver, notes, f"kemas kini tersedia: {ver}"
+            return False, ver, notes, f"sudah terkini ({local_version()})"
+        except Exception as e:
+            last_err = e
+            continue
+    return None, "", [], f"semakan dilangkau: {last_err}"
 
 
 def can_git_pull() -> bool:
